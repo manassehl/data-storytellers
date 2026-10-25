@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<title>Data Storytellers — Make Data Speak</title>
+<meta name='theme-color' content='#102033'>
+<link rel='icon' href='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect width=%2232%22 height=%2232%22 rx=%226%22 fill=%22%23102033%22/><circle cx=%2216%22 cy=%2216%22 r=%228%22 fill=%22%231c7a6a%22/><circle cx=%2224%22 cy=%228%22 r=%222.5%22 fill=%22%23e2a31b%22/></svg>'>
+<link rel='preconnect' href='https://fonts.googleapis.com'>
+<link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
+<link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&amp;family=Fraunces:opsz,wght@9..144,600;9..144,700&amp;display=swap'>
+<style>
+:root {
+  --ink:#142033; --soft:#3e5168; --paper:#f3eee4; --card:#fffaf2;
+  --gold:#e2a31b; --terra:#c4542c; --teal:#1c7a6a; --line:#e3d7c4; --navy:#102033;
+  --serif:Fraunces,Palatino,Georgia,serif;
+  --sans:'Atkinson Hyperlegible','Segoe UI',sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;color:var(--ink);font-family:var(--sans);font-size:18px;line-height:1.45;background:radial-gradient(900px 420px at -10% -10%,#ffe7c2,transparent 55%),radial-gradient(800px 380px at 110% 0%,#d5efe8,transparent 50%),var(--paper)}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.wrap{max-width:1040px;margin:0 auto;padding:18px 16px 72px}
+.top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--navy);color:#f6f1e6;padding:12px 14px;border-radius:18px}
+.brand{font-family:var(--serif);font-weight:700;letter-spacing:-.03em;font-size:20px;background:none;border:0;color:#f6f1e6;padding:0}
+.brand i{color:var(--gold);font-style:italic}
+.spacer{flex:1}
+.iconbtn{background:transparent;color:#f6f1e6;border:1px solid rgba(246,241,230,.35);border-radius:999px;padding:8px 14px;min-height:44px}
+.rail{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0}
+.rail span{font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:4px 8px;border-radius:999px;color:var(--soft)}
+.rail span.on{background:var(--navy);color:var(--gold)}
+h1{font-family:var(--serif);font-weight:700;letter-spacing:-.03em;font-size:clamp(36px,6vw,64px);line-height:.95;margin:0 0 8px}
+h2{font-family:var(--serif);font-size:clamp(28px,4vw,44px);line-height:1.05;margin:0 0 8px}
+.lede{font-size:20px;max-width:42rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:0 16px 40px rgba(16,32,51,.06);margin:12px 0}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{background:var(--navy);color:#f6f1e6;border:0;border-radius:14px;padding:12px 16px;min-height:48px;font-weight:700}
+.btn.gold{background:var(--gold);color:var(--navy)}
+.btn.teal{background:var(--teal);color:#fff}
+.btn.line{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.btn.on{background:#fff3d2;border-color:var(--gold)}
+.stack{display:flex;flex-direction:column;gap:8px}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:720px){.choices{grid-template-columns:1fr}}
+input[type=text],textarea{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;background:#fff;min-height:48px}
+textarea{min-height:120px;resize:vertical}
+.rule{border-left:4px solid var(--gold);padding:8px 12px;margin:12px 0;font-family:var(--serif);font-size:22px}
+.feedback{min-height:1.3em;font-weight:700}
+.feedback.good{color:var(--teal)}
+.feedback.bad{color:var(--terra)}
+.rowbtn{width:100%;text-align:left;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;min-height:48px;margin:4px 0;display:block}
+.rowbtn.on{border-color:var(--gold);background:#fff6df}
+.rowbtn.fixed{border-color:var(--teal)}
+.chart{display:flex;align-items:flex-end;gap:8px;height:280px;padding-top:8px}
+.mini .chart{height:150px}
+.col{flex:1;min-width:0;height:100%;background:transparent;border:0;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px;padding:0}
+.bar{width:100%;max-width:64px;background:var(--teal);border-radius:8px 8px 2px 2px;transform-origin:bottom;animation:grow .7s cubic-bezier(.2,.8,.2,1) both}
+.bar.dip{background:var(--terra)}
+.col.on .bar{box-shadow:0 0 0 3px var(--gold)}
+.val{font-variant-numeric:tabular-nums;font-weight:700;font-size:14px}
+.wk{font-size:12px;color:var(--soft)}
+.col:nth-child(1) .bar{animation-delay:.05s}
+.col:nth-child(2) .bar{animation-delay:.18s}
+.col:nth-child(3) .bar{animation-delay:.31s}
+.col:nth-child(4) .bar{animation-delay:.44s}
+.col:nth-child(5) .bar{animation-delay:.57s}
+.col:nth-child(6) .bar{animation-delay:.7s}
+.col:nth-child(7) .bar{animation-delay:.83s}
+.col:nth-child(8) .bar{animation-delay:.96s}
+@keyframes grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.earthwrap{width:160px;height:160px;margin:8px auto 16px;position:relative}
+.earth{width:128px;height:128px;border-radius:50%;margin:16px auto;background:radial-gradient(circle at 32% 32%,#b7ebe3,#1c7a6a 42%,#0e3a44 74%);box-shadow:inset -14px -8px 0 rgba(0,0,0,.18)}
+.orbit{position:absolute;inset:0;animation:spin 7s linear infinite}
+.sat{width:12px;height:12px;border-radius:50%;background:var(--gold);position:absolute;top:6px;left:50%;box-shadow:0 0 0 4px rgba(226,163,27,.28)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.overlay{position:fixed;inset:0;background:rgba(16,32,51,.94);color:#f6f1e6;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;z-index:5}
+.overlay b{font-family:var(--serif);font-size:clamp(42px,8vw,88px);letter-spacing:-.03em;animation:slam .4s both}
+.overlay b:nth-child(2){animation-delay:.28s;color:var(--gold)}
+.overlay b:nth-child(3){animation-delay:.56s}
+@keyframes slam{from{transform:translateY(-18px) scale(1.12);opacity:0}to{transform:none;opacity:1}}
+.stamp{display:inline-block;border:2px solid var(--terra);color:var(--terra);font-weight:700;letter-spacing:.14em;padding:2px 6px;transform:rotate(-6deg);animation:pop .35s both}
+@keyframes pop{from{transform:scale(1.5) rotate(-12deg);opacity:0}to{transform:rotate(-6deg);opacity:1}}
+.seal{width:116px;height:116px;display:block;margin:0 auto 8px}
+.small{color:var(--soft);font-size:14px}
+.footer{margin-top:18px;color:var(--soft);font-size:14px}
+.proofline{border-bottom:3px solid var(--gold);display:inline}
+body.classmode{font-size:22px}
+body.classmode h2{font-size:clamp(32px,5vw,52px)}
+@media(prefers-reduced-motion:reduce){.bar,.orbit,.overlay b,.stamp{animation:none}}
+@media print{.noprint{display:none !important}body{background:#fff}.card{box-shadow:none}}
+</style>
+</head>
+<body>
+<div class='wrap' id='app'><p>Opening the lab…</p></div>
+<script>
+const RAW = [
+  {id:'w1',week:1,club:'Coding',value:'12',status:'clean'},
+  {id:'w2',week:2,club:'Coding',value:'15',status:'clean'},
+  {id:'dup',week:2,club:'Coding',value:'15',status:'dup'},
+  {id:'blank',week:3,club:'Coding',value:'',status:'blank'},
+  {id:'typo',week:4,club:'Coding',value:'210',status:'typo'},
+  {id:'word',week:5,club:'Coding',value:'twenty',status:'word'},
+  {id:'w6',week:6,club:'Coding',value:'24',status:'clean'},
+  {id:'dip',week:7,club:'Coding',value:'9',status:'real-dip'},
+  {id:'w8',week:8,club:'Coding',value:'27',status:'clean'},
+  {id:'wrong',week:3,club:'Art Club',value:'16',status:'wrong'}
+];
+const CLASS_RAW = [
+  {id:'t1',week:1,crop:'Tomatoes',value:'40'},
+  {id:'t2',week:2,crop:'Tomatoes',value:'33'},
+  {id:'blankT',week:3,crop:'Tomatoes',value:''},
+  {id:'t4',week:4,crop:'Tomatoes',value:'400'},
+  {id:'t5',week:5,crop:'Tomatoes',value:'18'},
+  {id:'peppers',week:5,crop:'Peppers',value:'30'}
+];
+const TRAINS = [
+  {values:[8,12,16,21,27],answer:'rising'},
+  {values:[30,24,19,12,7],answer:'falling'},
+  {values:[16,17,15,16,17],answer:'bunching'},
+  {values:[8,9,10,26,28,27],answer:'splitting'}
+];
+const CLAIMS = [
+  {text:'Sign-ins rose from 12 in week 1 to 27 in week 8.',verdict:'publish',proof:[1,8],why:'Week 1 is 12 and week 8 is 27. Those two bars prove the rise.'},
+  {text:'Sign-ins went up every single week.',verdict:'cut',proof:[],why:'Week 7 is 9, lower than week 6. It did not go up every week. Cut that sentence.'},
+  {text:'Week 4 had 210 students, so the club is huge.',verdict:'cut',proof:[],why:'210 was dirty data. You fixed it to 21. The chart cannot prove 210. Cut it.'},
+  {text:'Week 7 was lower than the weeks right beside it.',verdict:'publish',proof:[6,7,8],why:'Week 6 is 24, week 7 is 9, and week 8 is 27. Those three bars prove the dip.'}
+];
+function freshRows(){return RAW.map(r=>({...r,removed:false}));}
+function fresh(){
+  return {phase:'title',missionPhase:'hook',name:'',muted:false,started:false,hookBeat:0,trainIndex:0,rows:freshRows(),log:[],trendOk:false,everyOk:false,claimStep:0,proving:false,proof:[],finalProof:[],tellStage:'claims',conclusion:'',conclusionOk:false,story:{q:'',chart:'',trend:'',end:'',why:''},storyOk:false,aud:{title:'',bars:'',words:''},audOk:false,halfOk:false,feedback:'',kind:'',selected:null,showTeacher:false,classStep:0,classRows:null,overlay:null,sang:false,fanfared:false};
+}
+function load(){try{const raw=localStorage.getItem('ds-mission-v1');return raw?JSON.parse(raw):null;}catch(e){return null;}}
+let S=Object.assign(fresh(),load()||{});
+S.feedback='';S.kind='';S.overlay=null;S.selected=null;S.classRows=null;S.showTeacher=false;
+if(!S.story)S.story={q:'',chart:'',trend:'',end:'',why:''};
+if(!S.aud)S.aud={title:'',bars:'',words:''};
+if(!S.rows)S.rows=freshRows();
+function save(){
+  try{
+    const copy=JSON.parse(JSON.stringify(S));
+    if(copy.phase==='class'||copy.phase==='key')copy.phase=copy.missionPhase||'title';
+    copy.feedback='';copy.kind='';copy.overlay=null;copy.selected=null;copy.classRows=null;copy.showTeacher=false;
+    localStorage.setItem('ds-mission-v1',JSON.stringify(copy));
+  }catch(e){}
+}
+function esc(s){return String(s??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');}
+function words(s){let n=0,inWord=false;for(const ch of String(s).trim()){const space=ch<=' ';if(!space&&!inWord){n+=1;inWord=true;}if(space)inWord=false;}return n;}
+function say(text,kind){S.feedback=text;S.kind=kind||'';}
+function go(phase){
+  S.phase=phase;S.feedback='';S.kind='';S.selected=null;
+  const mission=['hook','train','count','chart','tell','audience','half','card'];
+  if(mission.includes(phase))S.missionPhase=phase;
+  save();render();window.scrollTo(0,0);
+}
+function ctx(){
+  if(S.muted)return null;
+  try{
+    const AC=window.AudioContext||window.webkitAudioContext;
+    if(!AC)return null;
+    if(!window.__ac)window.__ac=new AC();
+    if(window.__ac.state==='suspended')window.__ac.resume();
+    return window.__ac;
+  }catch(e){return null;}
+}
+function tone(freq,dur,type,gain){
+  const ac=ctx();if(!ac)return;
+  const o=ac.createOscillator();const g=ac.createGain();
+  o.type=type||'sine';o.frequency.value=freq;
+  const t=ac.currentTime;g.gain.setValueAtTime(gain||0.06,t);
+  g.gain.exponentialRampToValueAtTime(0.001,t+dur);
+  o.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+dur+0.02);
+}
+function chime(){tone(523,0.12,'triangle',0.07);setTimeout(()=>tone(784,0.18,'triangle',0.06),90);}
+function buzz(){tone(98,0.16,'sine',0.04);}
+function fanfare(){[523,659,784,1046].forEach((f,i)=>setTimeout(()=>tone(f,i===3?0.32:0.14,'triangle',0.06),i*140));}
+function sing(values){
+  if(S.muted)return;
+  const scale=[196,220,247,262,294,330,370,392,440];
+  values.forEach((v,i)=>{const idx=Math.max(0,Math.min(8,Math.round((Number(v)/30)*8)));setTimeout(()=>tone(scale[idx],0.2,'triangle',0.07),i*170);});
+}
+function speak(text){
+  if(S.muted||!window.speechSynthesis)return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);u.rate=0.9;u.lang='en-US';speechSynthesis.speak(u);
+}
+function chantSound(){
+  if(!S.muted){
+    tone(90,0.18,'sine',0.09);
+    setTimeout(()=>tone(90,0.18,'sine',0.09),280);
+    setTimeout(()=>tone(118,0.18,'sine',0.09),560);
+    setTimeout(()=>{tone(392,0.2,'triangle',0.05);tone(523,0.2,'triangle',0.04);tone(659,0.28,'triangle',0.04);},840);
+  }
+  speak('Count it! Chart it! Tell it!');
+}
+function playChant(){S.overlay='chant';render();chantSound();setTimeout(()=>{if(S.overlay==='chant'){S.overlay=null;render();}},2800);}
+function issuesLeft(){
+  return ['dup','blank','typo','word','wrong'].filter(id=>{
+    const row=S.rows.find(r=>r.id===id);
+    if(!row)return true;
+    if(id==='dup'||id==='wrong')return !row.removed;
+    return row.status!=='fixed';
+  });
+}
+function series(){
+  return S.rows.filter(r=>!r.removed&&r.club==='Coding').slice().sort((a,b)=>a.week-b.week).map(r=>Number(r.value));
+}
+function seriesReady(){return series().join(',')==='12,15,18,21,20,24,9,27';}
+function hintFor(kind){
+  if(kind==='rising')return 'The bars are getting taller. That is rising.';
+  if(kind==='falling')return 'The bars are getting shorter. That is falling.';
+  if(kind==='bunching')return 'The bars are almost the same height. That is bunching.';
+  return 'A low group and a high group. That is splitting.';
+}
+function correctFix(status){
+  if(status==='dup')return 'delete-dup';
+  if(status==='blank')return 'fill-18';
+  if(status==='typo')return 'fix-21';
+  if(status==='word')return 'make-20';
+  if(status==='wrong')return 'remove-art';
+  if(status==='real-dip')return 'keep-9';
+  return '';
+}
+function miss(status){
+  if(status==='dup')return 'Keeping both rows would count week 2 twice. A duplicate is not extra students.';
+  if(status==='blank')return 'Do not guess, and do not throw the week away. Leaders go to the backup sheet.';
+  if(status==='typo')return '210 cannot be real. This club holds 30 people. Look at the extra zero.';
+  if(status==='word')return 'A chart needs a number. Do not delete the week. Change the word to 20.';
+  if(status==='wrong')return 'Do not mix art club into this story. The question is about coding club only.';
+  if(status==='real-dip')return 'Do not smooth the dip to make a prettier chart. Week 7 was a field trip. The 9 is real.';
+  return 'That row is already clean. Look for a row that cannot be true.';
+}
+function logText(fix){
+  if(fix==='delete-dup')return 'Removed the extra Week 2 row. The same sign-in was entered twice.';
+  if(fix==='fill-18')return 'Filled Week 3 from the backup sheet: 18. Did not guess.';
+  if(fix==='fix-21')return 'Changed Week 4 from 210 to 21. The club holds 30, so 210 was an extra zero.';
+  if(fix==='make-20')return 'Changed Week 5 from the word twenty to the number 20.';
+  if(fix==='remove-art')return 'Removed the Art Club row. This chart is only the coding club.';
+  if(fix==='keep-9')return 'Kept Week 7 at 9. Field trip day. The dip is real, so it stays.';
+  return 'Logged a change.';
+}
+function actionButtons(status){
+  const map={
+    dup:[['delete-dup','Delete this duplicate row.'],['keep-both','Keep both. Two rows means twice the students.']],
+    blank:[['fill-18','Use the backup sheet. Week 3 is 18.'],['guess','Guess 15 so the line looks smooth.'],['drop-week','Delete week 3.']],
+    typo:[['fix-21','The sheet says 21. Drop the extra 0.'],['keep-210','Keep 210. Bigger sounds better.']],
+    word:[['make-20','Change the word twenty into 20.'],['drop-word','Delete the week.']],
+    wrong:[['remove-art','Remove it. Art club is a different story.'],['add-art','Add 16 onto the coding total.']],
+    'real-dip':[['keep-9','Keep 9. Field trip day is real data.'],['smooth','Change 9 to 19 so the chart looks nicer.']]
+  };
+  return map[status]||[];
+}
+function barsHTML(values,weeks,opts){
+  const tap=opts&&opts.tap;
+  const labels=opts&&opts.labels;
+  const html=values.map((v,i)=>{
+    const week=weeks[i];
+    const h=Math.max(8,Math.round((Number(v)/30)*100));
+    const dip=week===7&&Number(v)===9;
+    const on=S.proof&&S.proof.includes(week)?' on':'';
+    const act=tap?` data-act='proof' data-week='${week}'`:'';
+    const tag=tap?'button':'div';
+    const label=labels?labels[i]:('Wk '+week);
+    return `<${tag} class='col${on}' type='button'${act}><span class='val'>${v}</span><span class='bar${dip?' dip':''}' style='height:${h}%'></span><span class='wk'>${label}</span></${tag}>`;
+  }).join('');
+  return `<div class='chart' role='img' aria-label='Bar chart'>${html}</div>`;
+}
+function fb(){return `<p class='feedback ${S.kind||''}' role='status'>${esc(S.feedback||'')}</p>`;}
+function rule(){return `<p class='rule'>No proof, no publish. If the chart cannot prove a sentence, the sentence comes out.</p>`;}
+function screenTitle(){
+  const cont=S.started?`<button type='button' class='btn gold' data-act='start'>Continue${S.name?`, ${esc(S.name)}`:''}</button><button type='button' class='btn line' data-act='reset'>Not you? Start fresh</button>`:`<button type='button' class='btn gold' data-act='start'>Start my mission</button>`;
+  const teacher=S.showTeacher?`<div class='card'><p>Teacher key</p><input id='teacher-word' type='text' autocomplete='off'><button type='button' class='btn' data-act='check-teacher'>Open the key</button></div>`:`<button type='button' class='btn line' data-act='show-teacher'>Teacher</button>`;
+  return `<p class='small'>Week 11 · Mr. Lee · 6th grade technology · KCA</p><h1>Data Storytellers</h1><p class='lede'>Make data speak. Clean it. Chart it. Tell the truth with it.</p><div class='earthwrap' aria-hidden='true'><div class='orbit'><div class='sat'></div></div><div class='earth'></div></div><div class='row'><button type='button' class='btn' data-act='chant'>COUNT IT! CHART IT! TELL IT!</button></div>${rule()}<div class='card'><label for='student-name'><strong>Your first name</strong></label><input id='student-name' type='text' maxlength='24' value='${esc(S.name)}' placeholder='First name'><div class='row' style='margin-top:10px'>${cont}<button type='button' class='btn line' data-act='class'>Class round — big screen</button></div><p class='small'>Class round uses the tomato log, together. Your mission is the coding club, with headphones. Your name stays on this computer.</p></div>${teacher}${fb()}`;
+}
+function screenHook(){
+  const beat=S.hookBeat||0;
+  const pages=[
+    [`The woman who mapped the Earth`,`Leaders, Gladys West did not just make a chart. She used satellite data to build a mathematical model of the Earth’s shape.`],
+    [`The same GPS in your family’s phone`,`Her model helped make GPS accurate — the same GPS that ships, planes, and your family’s phone use today.`],
+    [`Clean it. Model it. Tell the truth.`,`That is data work at the highest level. This week you do the full job. Next week you present it standing up. Luke 14:28 — a builder counts the cost before building. Leaders count honestly, show the count clearly, and let other people decide on that count.`]
+  ];
+  const next=beat<2?`<button type='button' class='btn gold' data-act='hook-next'>Next</button>`:`<button type='button' class='btn gold' data-act='hook-next'>I am ready</button>`;
+  return `<div class='earthwrap' aria-hidden='true'><div class='orbit'><div class='sat'></div></div><div class='earth'></div></div><h2>${pages[beat][0]}</h2><p class='lede'>${pages[beat][1]}</p><div class='row'><button type='button' class='btn line' data-act='chant'>Say the chant</button>${next}</div>${fb()}`;
+}
+function screenTrain(){
+  if(S.trainIndex>=4)return `<h2>You can name a trend.</h2><p class='lede'>Don’t tell me the numbers. Tell me what the numbers are doing: rising, falling, bunching, or splitting.</p><button type='button' class='btn gold' data-act='to-count'>Count a real log</button>${fb()}`;
+  const round=TRAINS[S.trainIndex];
+  const buttons=['rising','falling','bunching','splitting'].map(name=>`<button type='button' class='btn line' data-act='train' data-choice='${name}'>${name[0].toUpperCase()+name.slice(1)}</button>`).join('');
+  return `<p class='small'>Trend trainer · ${S.trainIndex+1} of 4</p><h2>What are the numbers doing?</h2><p class='lede'>Don’t tell me the numbers. Tell me what the numbers are DOING.</p><div class='card mini'>${barsHTML(round.values,round.values.map((_,i)=>i+1),null)}</div><div class='choices'>${buttons}</div>${fb()}`;
+}
+function screenCount(){
+  const rows=S.rows.filter(r=>!r.removed).slice().sort((a,b)=>a.week-b.week||a.club.localeCompare(b.club));
+  const list=rows.map(r=>{
+    const shown=r.value===''?'(blank)':r.value;
+    const on=S.selected===r.id?' on':'';
+    const fixed=r.status==='fixed'||r.status==='kept'?' fixed':'';
+    return `<button type='button' class='rowbtn${on}${fixed}' data-act='pick' data-id='${r.id}'>Week ${r.week} · ${esc(r.club)} · ${esc(shown)}</button>`;
+  }).join('');
+  const row=S.rows.find(r=>r.id===S.selected&&!r.removed);
+  let panel='<p class='small'>Tap a row that cannot be true.</p>';
+  if(row){
+    const acts=actionButtons(row.status);
+    panel=acts.length?`<p><strong>Week ${row.week} · ${esc(row.club)}</strong></p><div class='stack'>${acts.map(([fix,label])=>`<button type='button' class='btn line' data-act='fix' data-fix='${fix}'>${label}</button>`).join('')}</div>`:`<p>This row is already clean. Leave it.</p>`;
+  }
+  const log=S.log.map((item,i)=>`<li>${esc(item.text)}${i===S.log.length-1?` <span class='stamp'>LOGGED</span>`:''}</li>`).join('');
+  const ready=issuesLeft().length===0&&seriesReady();
+  return `<p class='small'>Count it · fixes ${5-issuesLeft().length} of 5</p><h2>Is the coding club growing this quarter?</h2><p class='lede'>The principal will decide if the club keeps the extra Chromebook cart. The sign-in sheet was typed by three people. It is messy. The club holds 30 students. Week 3’s backup sheet says 18.</p>${rule()}<div class='card'><h2 style='font-size:28px'>Messy log</h2>${list}<div style='margin-top:12px'>${panel}</div><button type='button' class='btn line' data-act='hint'>I need a hint</button></div><div class='card'><h2 style='font-size:28px'>Cleaning log</h2>${log?`<ul class='log'>${log}</ul>`:`<p class='small'>Nothing logged yet. Every fix gets a line.</p>`}</div>${ready?`<button type='button' class='btn gold' data-act='to-chart'>Chart the clean data</button>`:''}${fb()}`;
+}
+function screenChart(){
+  const vals=seriesReady()?series():[12,15,18,21,20,24,9,27];
+  const trend=S.trendOk?`<p class='lede'>Did sign-ins go up every single week?</p><div class='row'><button type='button' class='btn line' data-act='every' data-val='yes'>Yes, every week</button><button type='button' class='btn line' data-act='every' data-val='no'>No</button></div>`:`<p class='lede'>Overall, what are these numbers doing?</p><div class='choices'><button type='button' class='btn line' data-act='trend' data-val='rising'>Rising</button><button type='button' class='btn line' data-act='trend' data-val='falling'>Falling</button><button type='button' class='btn line' data-act='trend' data-val='bunching'>Bunching</button><button type='button' class='btn line' data-act='trend' data-val='splitting'>Splitting</button></div>`;
+  const next=S.trendOk&&S.everyOk?`<button type='button' class='btn gold' data-act='to-tell'>Tell the story</button>`:'';
+  return `<p class='small'>Chart it</p><h2>The clean chart</h2><p>Week 7 is red on purpose. Listen for it.</p><div class='card'>${barsHTML(vals,[1,2,3,4,5,6,7,8],null)}<button type='button' class='btn line' data-act='sing'>Listen to the data</button></div>${trend}${next}${fb()}`;
+}
+function screenTell(){
+  if(S.tellStage==='write')return screenWrite();
+  if(S.tellStage==='story')return screenStory();
+  if(S.claimStep>=4)return `<h2>Four claims judged.</h2><p class='lede'>You kept only what the bars can prove. Now type your own conclusion.</p><button type='button' class='btn gold' data-act='to-write'>Type my conclusion</button>${fb()}`;
+  const claim=CLAIMS[S.claimStep];
+  const chart=barsHTML(seriesReady()?series():[12,15,18,21,20,24,9,27],[1,2,3,4,5,6,7,8],{tap:!!S.proving});
+  const controls=S.proving?`<p>Underline the proof. Tap the bars, then lock them.</p><button type='button' class='btn gold' data-act='lock-proof'>Lock the proof</button>`:`<div class='row'><button type='button' class='btn teal' data-act='verdict' data-verdict='publish'>Publish</button><button type='button' class='btn terra' data-act='verdict' data-verdict='cut' style='background:var(--terra);color:#fff'>Cut</button></div>`;
+  return `<p class='small'>Tell it · claim ${Math.min(S.claimStep+1,4)} of 4</p><h2>Can this sentence be published?</h2>${rule()}<div class='card'><p class='lede'>${esc(claim.text)}</p>${chart}${controls}</div>${fb()}`;
+}
+function screenWrite(){
+  const vals=seriesReady()?series():[12,15,18,21,20,24,9,27];
+  const starters=[
+    ['Sign-ins rose from 12 in week 1 to 27 in week 8.','Rise, start to end'],
+    ['The club is growing overall, but week 7 dipped to 9 on the field trip.','Rise, plus the dip'],
+    ['The coding club grew from the start of the quarter to the end.','Grew overall']
+  ].map(([line,label])=>`<button type='button' class='btn line' data-act='starter' data-line='${line}'>${label}</button>`).join('');
+  const next=S.conclusionOk?`<button type='button' class='btn gold' data-act='to-story'>Build the 30-second story</button>`:'';
+  return `<p class='small'>Tell it · your conclusion</p><h2>Type it. Then underline the proof.</h2>${rule()}<div class='card'>${barsHTML(vals,[1,2,3,4,5,6,7,8],{tap:true})}<p class='small'>Tap the bars that prove your sentence. A rise from the start to the end needs week 1 and week 8. If you mention the dip, also tap week 7.</p><textarea id='conclusion' maxlength='400'>${esc(S.conclusion||'')}</textarea><div class='choices' style='margin-top:8px'>${starters}</div><button type='button' class='btn gold' data-act='test-conclusion'>Test this claim</button></div>${next}${fb()}`;
+}
+function screenStory(){
+  const pick=(part,val,label)=>`<button type='button' class='btn ${S.story[part]===val?'gold':'line'}' data-act='story' data-part='${part}' data-val='${val}'>${label}</button>`;
+  const block=(title,part,right,wrong)=>`<div class='card'><p><strong>${title}</strong></p><div class='stack'>${pick(part,'right',right)}${pick(part,'wrong',wrong)}</div></div>`;
+  const hear=S.storyOk?`<button type='button' class='btn gold' data-act='hear'>Hear my 30-second story</button><button type='button' class='btn' data-act='to-audience'>Design for a 2nd grader</button>`:'';
+  return `<p class='small'>Tell it · five parts</p><h2>Build the story, in order.</h2><p>Question, chart, trend, conclusion, why it matters.</p>${block('1 · Question','q','Is the coding club growing this quarter?','How many chairs are in the room?')}${block('2 · Chart','chart','A bar chart of eight weeks of sign-ins','A pie chart of favorite lunch')}${block('3 · Trend','trend','Rising overall, with a dip in week 7','Falling every single week')}${block('4 · Conclusion','end','The club grew from 12 students to 27','Week 4 had 210 students')}${block('5 · Why it matters','why','The principal is deciding on the extra Chromebook cart','So we can delete week 7 and hide the dip')}<div class='row'>${hear}</div>${fb()}`;
+}
+function audTitle(){if(S.aud.title==='simple')return 'Coding Club Is Growing!';if(S.aud.title==='hard')return 'Q1 Disaggregated Sign-in Totals';return 'Choose a title';}
+function audWords(){if(S.aud.words==='kid')return 'More kids came at the end.';if(S.aud.words==='hard')return 'The mean increased, with a negative residual in week 7.';return 'Choose the sentence.';}
+function screenAudience(){
+  const chart=S.aud.bars==='big'?barsHTML([12,27],[1,8],{labels:['Start','End']}):S.aud.bars==='all'?barsHTML([12,15,18,21,20,24,9,27],[1,2,3,4,5,6,7,8],null):`<p class='small'>Choose the bars.</p>`;
+  const pick=(part,val,label)=>`<button type='button' class='btn ${S.aud[part]===val?'gold':'line'}' data-act='aud' data-part='${part}' data-val='${val}'>${label}</button>`;
+  const next=S.audOk?`<button type='button' class='btn gold' data-act='to-card'>Make my Data Story Card</button>`:'';
+  return `<p class='small'>For a 2nd-grade reader</p><h2>Would they get it in ten seconds?</h2><div class='card'><h2>${esc(audTitle())}</h2>${chart}<p class='lede'>${esc(audWords())}</p></div><div class='card'><p><strong>Title</strong></p><div class='stack'>${pick('title','simple','Coding Club Is Growing!')}${pick('title','hard','Q1 Disaggregated Sign-in Totals')}</div><p><strong>Bars</strong></p><div class='stack'>${pick('bars','big','Two huge bars: start and end')}${pick('bars','all','All eight weeks, small labels')}</div><p><strong>Words</strong></p><div class='stack'>${pick('words','kid','More kids came at the end.')}${pick('words','hard','The mean increased, with a negative residual in week 7.')}</div></div><div class='row'>${next}<button type='button' class='btn line' data-act='to-half'>Fast finisher: half the data</button></div>${fb()}`;
+}
+function screenHalf(){
+  return `<p class='small'>Fast finisher</p><h2>Same question. Half the data.</h2><p class='lede'>You only have weeks 1 to 4. Someone wants to publish: “The coding club grew every week of the whole quarter.”</p><div class='card'>${barsHTML([12,15,18,21],[1,2,3,4],null)}</div><div class='stack'><button type='button' class='btn line' data-act='half' data-val='yes-up'>Yes. These four weeks go up, so the quarter is settled.</button><button type='button' class='btn line' data-act='half' data-val='safe-no'>No. This chart only proves the first four weeks.</button><button type='button' class='btn line' data-act='half' data-val='yes-21'>Yes. 21 is bigger than 12, so publish it.</button></div><button type='button' class='btn line' data-act='to-audience'>Back to the 2nd-grade chart</button>${S.halfOk?`<button type='button' class='btn gold' data-act='to-card'>Back to my card</button>`:''}${fb()}`;
+}
+function storySentence(){return 'The question was, is the coding club growing this quarter? The chart shows eight weeks of sign-ins. The trend is rising overall, with a dip in week 7. The conclusion is, the club grew from 12 students to 27. It matters because the principal is deciding whether the club keeps the extra Chromebook cart.';}
+function screenCard(){
+  const vals=[12,15,18,21,20,24,9,27];
+  const proof=(S.finalProof||[]).slice().sort((a,b)=>a-b).join(', ')||'1 and 8';
+  const star=S.halfOk?`<p><strong>Half-data star.</strong> This storyteller would not publish a quarter from half the weeks.</p>`:'';
+  return `<div class='card' id='print-card'><svg class='seal' viewBox='0 0 120 120' aria-hidden='true'><circle cx='60' cy='60' r='54' fill='none' stroke='#e2a31b' stroke-width='4'/><circle cx='60' cy='60' r='44' fill='none' stroke='#1c7a6a' stroke-width='2'/><text x='60' y='52' text-anchor='middle' font-size='11' fill='#142033' font-family='Georgia'>DATA</text><text x='60' y='68' text-anchor='middle' font-size='11' fill='#142033' font-family='Georgia'>STORYTELLER</text><text x='60' y='84' text-anchor='middle' font-size='9' fill='#1c7a6a' font-family='Georgia'>${S.halfOk?'STAR':''}</text></svg><p class='small'>Data Story Card · ${esc(S.name||'Storyteller')}</p><h2>Is the coding club growing?</h2><p>For the principal, who decides on the extra Chromebook cart.</p>${barsHTML(vals,[1,2,3,4,5,6,7,8],null)}<h2 style='font-size:28px'>Cleaning log</h2><ul>${S.log.map(item=>`<li>${esc(item.text)}</li>`).join('')}</ul><h2 style='font-size:28px'>Conclusion</h2><p class='lede'><span class='proofline'>${esc(S.conclusion||'')}</span></p><p class='small'>Proof underlined: weeks ${esc(proof)}</p><h2 style='font-size:28px'>One-sentence story</h2><p>${esc(storySentence())}</p><p><strong>For a 2nd grader:</strong> ${esc(audTitle())} — ${esc(audWords())}</p>${star}<p class='small'>Gladys West used clean satellite data to model the Earth’s shape so GPS could tell the truth. Luke 14:28 — count honestly before you build.</p><p><strong>COUNT IT! CHART IT! TELL IT!</strong></p><p class='small'>Homework: practice this 30-second story with someone at home. Teach them who Gladys West was.</p></div><div class='row noprint'><button type='button' class='btn gold' data-act='print'>Print or save my card</button><button type='button' class='btn line' data-act='hear'>Hear the story again</button><button type='button' class='btn line' data-act='to-half'>Half-data challenge</button><button type='button' class='btn line' data-act='home'>Home</button></div>${fb()}`;
+}
+function syncClass(){
+  if(!S.classRows)S.classRows=CLASS_RAW.map(r=>({...r,removed:false}));
+  for(const r of S.classRows){
+    r.removed=r.id==='peppers'&&S.classStep>=4;
+    if(r.id==='t4')r.value=S.classStep>=2?'22':'400';
+    if(r.id==='blankT')r.value=S.classStep>=6?'28':'';
+  }
+}
+function classList(){
+  return S.classRows.filter(r=>!r.removed).map(r=>{
+    const shown=r.value===''?'(blank)':r.value;
+    return `<button type='button' class='rowbtn' data-act='class-row' data-id='${r.id}'>Week ${r.week} · ${r.crop} · ${shown}</button>`;
+  }).join('');
+}
+function screenClass(){
+  const step=S.classStep||0;
+  if(step===0)return `<p class='small'>Class round · big screen</p><h2>Count it. Chart it. Tell it.</h2><p class='lede'>Gladys West did not just make a chart. She cleaned satellite data until the model of the Earth was true enough for GPS. We will clean one log together. Then you will do the coding club alone. I will not show you those answers.</p><button type='button' class='btn gold' data-act='chant'>Say the chant</button> <button type='button' class='btn' data-act='class-next'>Show the tomato log</button>`;
+  if(step===1)return `<h2>Which row is impossible?</h2><p>A basket holds 50 pounds.</p>${classList()}${fb()}`;
+  if(step===2)return `<h2>Logged.</h2><p class='lede'>400 was an extra zero. The sheet says 22. <span class='stamp'>LOGGED</span></p>${classList()}<button type='button' class='btn gold' data-act='class-next'>Next mistake</button>${fb()}`;
+  if(step===3)return `<h2>Which row is not tomatoes?</h2>${classList()}${fb()}`;
+  if(step===4)return `<h2>Removed.</h2><p class='lede'>Peppers are a different story. <span class='stamp'>LOGGED</span></p>${classList()}<button type='button' class='btn gold' data-act='class-next'>The blank week</button>${fb()}`;
+  if(step===5)return `<h2>Week 3 is blank.</h2><p>The backup sheet says 28. What do leaders do?</p>${classList()}<div class='stack'><button type='button' class='btn line' data-act='class-choice' data-val='guess'>Guess 30.</button><button type='button' class='btn line' data-act='class-choice' data-val='drop'>Delete the week.</button><button type='button' class='btn gold' data-act='class-choice' data-val='backup'>Use the backup sheet: 28.</button></div>${fb()}`;
+  if(step===6)return `<h2>What are the numbers doing?</h2><div class='card'>${barsHTML([40,33,28,22,18],[1,2,3,4,5],null)}</div><div class='choices'><button type='button' class='btn line' data-act='class-choice' data-val='rising'>Rising</button><button type='button' class='btn line' data-act='class-choice' data-val='falling'>Falling</button><button type='button' class='btn line' data-act='class-choice' data-val='bunching'>Bunching</button><button type='button' class='btn line' data-act='class-choice' data-val='splitting'>Splitting</button></div>${fb()}`;
+  if(step===7)return `<h2>Publish or cut?</h2><p class='lede'>The garden produced more pounds every week.</p><div class='row'><button type='button' class='btn line' data-act='class-choice' data-val='publish'>Publish</button><button type='button' class='btn gold' data-act='class-choice' data-val='cut'>Cut</button></div>${fb()}`;
+  return `<h2>That is the standard.</h2><p class='lede'>Tomato pounds fell from 40 to 18. The garden is slowing down. Every word of that sentence is on the chart.</p><p class='rule'>Headphones on. Your data is the coding club. Same rules. I will not do that one for you.</p><button type='button' class='btn gold' data-act='home'>Back to the lab</button>${fb()}`;
+}
+function screenKey(){
+  return `<h2>Teacher key</h2><div class='card'><p><strong>Coding club, clean:</strong> 12, 15, 18, 21, 20, 24, 9, 27.</p><p>Duplicate week 2 deleted. Blank week 3 is 18 from the backup. 210 becomes 21. Twenty becomes 20. Art club removed. Week 7 stays 9.</p><p><strong>Trend:</strong> rising overall. Not every week. Week 7 is the field trip. Week 5 also slips by one.</p><p><strong>Publish:</strong> rose from 12 to 27 (weeks 1 and 8). Week 7 is lower than the weeks beside it (weeks 6, 7, 8).</p><p><strong>Cut:</strong> went up every week. Week 4 had 210.</p><p><strong>2nd grade:</strong> title Coding Club Is Growing, two bars, More kids came at the end.</p><p><strong>Half data:</strong> not safe. Weeks 1 to 4 cannot prove the quarter.</p><p><strong>Tomatoes:</strong> 40, 33, 28, 22, 18. Falling.</p></div><button type='button' class='btn line' data-act='home'>Back</button>`;
+}
+function rail(){
+  const items=['Hook','Train','Count','Chart','Tell','Audience','Card'];
+  const phases=['hook','train','count','chart','tell','audience','card'];
+  const phase=S.phase==='half'?'audience':S.phase;
+  const at=phases.indexOf(phase);
+  return `<div class='rail noprint'>${items.map((name,i)=>`<span class='${i===at?'on':''}'>${name}</span>`).join('')}</div>`;
+}
+function shell(inner){
+  document.body.classList.toggle('classmode',S.phase==='class');
+  const overlay=S.overlay==='chant'?`<div class='overlay'><b>COUNT IT!</b><b>CHART IT!</b><b>TELL IT!</b></div>`:'';
+  return `<header class='top noprint'><button type='button' class='brand' data-act='home'>Data <i>Storytellers</i></button><span class='spacer'></span><button type='button' class='iconbtn' data-act='chant'>Chant</button><button type='button' class='iconbtn' data-act='mute'>${S.muted?'Sound off':'Sound on'}</button></header>${rail()}<main>${inner}</main><p class='footer noprint'>No proof, no publish. · Names stay on this computer. · TEKS 126.17(c)(6) and (7)</p>${overlay}`;
+}
+function render(){
+  const app=document.getElementById('app');
+  let inner='';
+  if(S.phase==='hook')inner=screenHook();
+  else if(S.phase==='train')inner=screenTrain();
+  else if(S.phase==='count')inner=screenCount();
+  else if(S.phase==='chart')inner=screenChart();
+  else if(S.phase==='tell')inner=screenTell();
+  else if(S.phase==='audience')inner=screenAudience();
+  else if(S.phase==='half')inner=screenHalf();
+  else if(S.phase==='card')inner=screenCard();
+  else if(S.phase==='class'){syncClass();inner=screenClass();}
+  else if(S.phase==='key')inner=screenKey();
+  else inner=screenTitle();
+  app.innerHTML=shell(inner);
+  if(S.phase==='chart'&&!S.sang&&seriesReady()){S.sang=true;save();setTimeout(()=>sing(series()),450);}
+  if(S.phase==='card'&&!S.fanfared){S.fanfared=true;save();setTimeout(()=>fanfare(),250);}
+}
+function startMission(){
+  const el=document.getElementById('student-name');
+  const name=((el&&el.value)||S.name||'').trim();
+  if(!name){say('Type your first name so the Data Story Card knows who did the work.','bad');render();return;}
+  S.name=name.slice(0,24);S.started=true;
+  go(S.missionPhase||'hook');
+}
+function applyFix(id,fix){
+  const row=S.rows.find(r=>r.id===id);
+  if(!row||row.removed)return;
+  if(row.status==='clean'||row.status==='fixed'||row.status==='kept'){say('That row is already clean. Look for a row that cannot be true.','bad');buzz();render();return;}
+  if(fix!==correctFix(row.status)){say(miss(row.status),'bad');buzz();render();return;}
+  if(fix==='delete-dup'||fix==='remove-art')row.removed=true;
+  if(fix==='fill-18')row.value='18';
+  if(fix==='fix-21')row.value='21';
+  if(fix==='make-20')row.value='20';
+  row.status=fix==='keep-9'?'kept':'fixed';
+  S.log.push({id,text:logText(fix)});
+  S.selected=null;
+  say('Logged. A leader writes down every change.','good');
+  chime();save();render();
+}
+function testConclusion(){
+  const text=(S.conclusion||'').trim();
+  const low=text.toLowerCase();
+  if(words(text)<8){say('Write at least one full sentence. Eight words or more.','bad');buzz();render();return;}
+  if(low.includes('every week')||low.includes('every single')){say('The chart does not show a rise every week. Week 7 is 9. Take that claim out.','bad');buzz();render();return;}
+  if(low.includes('210')){say('210 was dirty data. The clean week 4 number is 21. Do not publish 210.','bad');buzz();render();return;}
+  if(low.includes('art club')){say('Art club is not on this chart. That sentence has to come out.','bad');buzz();render();return;}
+  const rise=['rose','rising','grew','grown','increas','higher','growing'].some(w=>low.includes(w));
+  if(!rise){say('Answer the question. What are the numbers doing? Use a trend word such as rose or growing.','bad');buzz();render();return;}
+  const proof=S.proof||[];
+  if(!(proof.includes(1)&&proof.includes(8))){say('Underline week 1 and week 8. Those bars prove the rise from 12 to 27.','bad');buzz();render();return;}
+  const dip=['dip','week 7','lowest','field trip','dropped','fell'].some(w=>low.includes(w));
+  if(dip&&!proof.includes(7)){say('You told the truth about the dip. Underline week 7 too.','bad');buzz();render();return;}
+  S.conclusionOk=true;S.finalProof=proof.slice();S.conclusion=text;
+  say('Published. Every claim in that sentence has bars under it.','good');chime();save();render();
+}
+function onClick(e){
+  const btn=e.target.closest('[data-act]');
+  if(!btn)return;
+  ctx();
+  const act=btn.dataset.act;
+  if(act==='mute'){S.muted=!S.muted;if(S.muted&&window.speechSynthesis)speechSynthesis.cancel();save();render();return;}
+  if(act==='chant'){playChant();return;}
+  if(act==='home'){S.phase='title';S.feedback='';S.kind='';save();render();return;}
+  if(act==='start'){startMission();return;}
+  if(act==='reset'){S=fresh();try{localStorage.removeItem('ds-mission-v1');}catch(err){}render();return;}
+  if(act==='class'){S.classRows=CLASS_RAW.map(r=>({...r,removed:false}));S.classStep=0;S.phase='class';S.feedback='';render();return;}
+  if(act==='show-teacher'){S.showTeacher=true;render();return;}
+  if(act==='check-teacher'){const v=(document.getElementById('teacher-word').value||'').trim().toLowerCase();if(v==='westgps'){S.phase='key';S.showTeacher=false;render();}else{say('That word is not the teacher key.','bad');render();}return;}
+  if(act==='hook-next'){S.hookBeat=(S.hookBeat||0)+1;if(S.hookBeat>2)go('train');else{save();render();}return;}
+  if(act==='train'){const round=TRAINS[S.trainIndex];if(!round)return;if(btn.dataset.choice===round.answer){S.trainIndex+=1;say(S.trainIndex>=4?'You can name a trend. Now clean a real log.':'Yes. '+hintFor(round.answer),'good');chime();}else{say('Not yet. '+hintFor(round.answer),'bad');buzz();}save();render();return;}
+  if(act==='to-count'){go('count');return;}
+  if(act==='hint'){say('Five things do not belong: a copy, an empty cell, an impossible number, a word, and another club. The small week is not one of them.','');render();return;}
+  if(act==='pick'){S.selected=btn.dataset.id;S.feedback='';render();return;}
+  if(act==='fix'){applyFix(S.selected,btn.dataset.fix);return;}
+  if(act==='to-chart'){if(!seriesReady()){say('The log is not clean yet.','bad');render();return;}go('chart');return;}
+  if(act==='sing'){if(S.muted){say('Turn sound on, then listen again. The dip has a lower note.','bad');render();return;}sing(seriesReady()?series():[12,15,18,21,20,24,9,27]);return;}
+  if(act==='trend'){if(btn.dataset.val==='rising'){S.trendOk=true;say('Rising overall. Now the honest question.','good');chime();}else{say('Look from week 1 to week 8. The end is higher than the start. The dip is real, and the overall trend is still rising.','bad');buzz();}save();render();return;}
+  if(act==='every'){if(btn.dataset.val==='no'){S.everyOk=true;say('Week 7 falls to 9 because of the field trip. Week 5 also slips by one. Leaders do not hide a dip.','good');chime();}else{say('Look at week 7. It is 9, under the weeks beside it.','bad');buzz();}save();render();return;}
+  if(act==='to-tell'){if(!S.trendOk||!S.everyOk){say('Name the trend, and answer the every-week question, before you publish.','bad');render();return;}go('tell');return;}
+  if(act==='verdict'){const claim=CLAIMS[S.claimStep];if(!claim||S.proving)return;if(btn.dataset.verdict===claim.verdict){if(claim.verdict==='publish'){S.proving=true;S.proof=[];say('Now underline the proof. Tap the bars that prove this sentence.','');}else{S.claimStep+=1;S.proving=false;say(claim.why,'good');}chime();}else{say(claim.why,'bad');buzz();}save();render();return;}
+  if(act==='proof'){if(!(S.proving||S.tellStage==='write'))return;const week=Number(btn.dataset.week);if(S.proof.includes(week))S.proof=S.proof.filter(w=>w!==week);else S.proof.push(week);render();return;}
+  if(act==='lock-proof'){const claim=CLAIMS[S.claimStep];const got=(S.proof||[]).slice().sort((a,b)=>a-b).join(',');const need=claim.proof.slice().sort((a,b)=>a-b).join(',');if(got===need){S.proving=false;S.proof=[];S.claimStep+=1;say('The proof matches. That sentence can be published.','good');chime();}else{say('Not those bars. '+claim.why,'bad');buzz();}save();render();return;}
+  if(act==='to-write'){S.tellStage='write';S.proving=true;S.proof=[];go('tell');return;}
+  if(act==='starter'){S.conclusion=btn.dataset.line||'';S.conclusionOk=false;say('You can edit that sentence. Then underline the bars and test it.','');render();return;}
+  if(act==='test-conclusion'){testConclusion();return;}
+  if(act==='to-story'){if(!S.conclusionOk){say('Test the conclusion first. No proof, no publish.','bad');render();return;}S.tellStage='story';S.proving=false;go('tell');return;}
+  if(act==='story'){S.story[btn.dataset.part]=btn.dataset.val;const parts=['q','chart','trend','end','why'];S.storyOk=parts.every(p=>S.story[p]==='right');if(btn.dataset.val==='right'){chime();say(S.storyOk?'That is a full data story. Five parts, and every one can be proved.':'That part is true. Keep going.','good');}else{buzz();say('The chart cannot support that part. Pick the line the bars prove.','bad');}save();render();return;}
+  if(act==='hear'){if(!S.storyOk&&S.phase!=='card'){say('Build all five true parts first.','bad');render();return;}if(!window.speechSynthesis){say('This browser will not read aloud. Read the sentence out loud yourself. That still counts.','');render();return;}speak(storySentence());return;}
+  if(act==='to-audience'){if(!S.storyOk){say('Finish the five-part story first.','bad');render();return;}go('audience');return;}
+  if(act==='aud'){S.aud[btn.dataset.part]=btn.dataset.val;S.audOk=S.aud.title==='simple'&&S.aud.bars==='big'&&S.aud.words==='kid';say(S.audOk?'A 2nd grader can get this in ten seconds.':'Still too hard for a 2nd grader. Simple title, two big bars, short words.',S.audOk?'good':'bad');save();render();return;}
+  if(act==='to-card'){if(!S.audOk){say('Finish the 2nd-grade chart first.','bad');render();return;}go('card');return;}
+  if(act==='to-half'){go('half');return;}
+  if(act==='half'){if(btn.dataset.val==='safe-no'){S.halfOk=true;say('Not safe to publish. Half the weeks cannot prove a whole quarter. Shrink the claim: it rose across the first four weeks.','good');chime();}else{say('No proof, no publish. These bars only show weeks 1 to 4. Week 7 is not even here.','bad');buzz();}save();render();return;}
+  if(act==='print'){window.print();return;}
+  if(act==='class-next'){if(S.classStep===0)S.classStep=1;else if(S.classStep===2)S.classStep=3;else if(S.classStep===4)S.classStep=5;S.feedback='';render();return;}
+  if(act==='class-row'){const id=btn.dataset.id;if(S.classStep===1&&id==='t4'){S.classStep=2;say('Yes. 400 pounds cannot fit in a 50-pound basket. The sheet says 22.','good');chime();}else if(S.classStep===3&&id==='peppers'){S.classStep=4;say('Yes. Peppers are not this story. Remove that row.','good');chime();}else if(S.classStep===1||S.classStep===3){say(S.classStep===1?'Look for a number the basket could not hold.':'Find the crop that is not tomatoes.','bad');buzz();}render();return;}
+  if(act==='class-choice'){const v=btn.dataset.val;if(S.classStep===5&&v==='backup'){S.classStep=6;say('Logged. Week 3 is 28, from the backup sheet.','good');chime();}else if(S.classStep===5){say('Do not guess, and do not throw the week out. Use the backup sheet.','bad');buzz();}else if(S.classStep===6&&v==='falling'){S.classStep=7;say('Falling. The pounds go down from 40 to 18.','good');chime();}else if(S.classStep===6){say('Look from 40 down to 18. What are the numbers doing?','bad');buzz();}else if(S.classStep===7&&v==='cut'){S.classStep=8;say('Cut. The bars get shorter. That sentence cannot be published.','good');chime();}else if(S.classStep===7){say('The bars get shorter. No proof, no publish.','bad');buzz();}render();return;}
+}
+function onInput(e){if(e.target.id==='conclusion'){S.conclusion=e.target.value;if(S.conclusionOk)S.conclusionOk=false;save();}}
+function onKey(e){if(e.key==='Enter'&&e.target.id==='student-name')startMission();}
+document.addEventListener('click',onClick);
+document.addEventListener('input',onInput);
+document.addEventListener('keydown',onKey);
+render();
+</script>
+</body>
+</html>
